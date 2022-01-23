@@ -1,0 +1,82 @@
+{% sw_extends '@Storefront/storefront/page/content/index.html.twig' %}
+
+{% block base_html %}
+    {% if not app.request.cookies.has("shopwareCountrySelector") %}
+
+    <button id="countrySelectorModalButton" type="button" class="btn btn-primary invisible" data-toggle="modal" data-target="#countrySelectorModal">
+        </button>
+
+        <div class="modal fade" id="countrySelectorModal" tabindex="-1" role="dialog" aria-labelledby="countrySelectorModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="countrySelectorModalLabel">Please select your country:</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% include 'storefront/page/content/countrySelect.html.twig' %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="submitCountry" class="btn btn-primary btn-block" data-dismiss="modal">
+                            Save changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{ parent() }}
+
+        {#  I had a problem loading import Plugin from 'src/plugin-system/plugin.class'; #}
+        {#  This is why I used this 'hack' way... #}
+
+    {% endif %}
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function(event) {
+
+            var cookieArr = document.cookie.split(";");
+
+            for(var i = 0; i < cookieArr.length; i++){
+                var cookieSeg = cookieArr[i].trim();
+                var firstEq = cookieSeg.indexOf("=");
+
+                var cookieName = cookieSeg.substr(0,firstEq);
+                var cookieValue = cookieSeg.substr(firstEq+1);
+
+                if (cookieName === "shopwareCountrySelector") {
+                    window.location.href = location.origin + "/" + cookieValue;
+                }
+            }
+
+            function defer() {
+                if (window.jQuery) {
+                    $('#countrySelectorModal').modal('show');
+
+                    $('#submitCountry').click(function() {
+                        var country = $('#country').val();
+
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", '/storefront/countrySelect', true);
+                        xhr.setRequestHeader('Content-Type', 'application/json');
+                        xhr.send(JSON.stringify({
+                            country: country
+                        }));
+
+                    });
+                } else {
+                    setTimeout(function() { defer(method) }, 50);
+                }
+            }
+
+            defer();
+        });
+
+    </script>
+
+{% endblock %}
+
+

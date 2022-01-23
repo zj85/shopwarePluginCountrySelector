@@ -1,0 +1,28 @@
+{
+  "name": "zlatko/country-selector",
+  "description": "Country selector Example for Moonshiner",
+  "version": "0.0.1",
+  "type": "shopware-platform-plugin",
+  "license": "MIT",
+  "authors": [
+      {
+          "name": "Zlatko Jankovic",
+          "role": "new Moonshiner Developer"
+      }
+  ],
+  "require": {
+      "shopware/core": "^6.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "CountrySelector\\": "src/"
+    }
+  },
+  "extra": {
+    "shopware-plugin-class": "CountrySelector\\CountrySelector",
+    "label": {
+      "de-DE": "Country selector",
+      "en-GB": "Country selector"
+    }
+  }
+}
